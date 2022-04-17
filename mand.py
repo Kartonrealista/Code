@@ -1,6 +1,5 @@
 import matplotlib.pyplot as p
 
-
 A = []
 B = []
 S = []
