@@ -1,4 +1,7 @@
 from matplotlib import pyplot as p
+import string_sum
+
+print(string_sum.sum_as_string(5, 20))
 
 X = [1, 1]
 Y = [0, 1]
@@ -26,6 +29,8 @@ for i in range(2, 1000):
         xn = xp/gcd(i, xp)
     Y.append(xn)
     xp = xn
+
+
 
 p.scatter(X, Y, S)
 p.show()
