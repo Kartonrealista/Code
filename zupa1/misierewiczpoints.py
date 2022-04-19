@@ -32,7 +32,7 @@ def main(x, y):
             return [x+1, j]
 
 
-vars = [1, 1]
+vars = [1, 0.244]
 
 while True:
     vars = main(vars[0], vars[1])
