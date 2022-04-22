@@ -33,11 +33,11 @@ def main(r1, r2, x1, y2, file_n, depth):
         for a in A:
 
             #print(f"mandelbrot{file_n} {100*(b-B[0])/(B[-1]-B[0])}%")
-            tempL.append(zupa1.mand(a, -b))
+            tempL.append(zupa1.mand(a, -b, depth))
         X.append(tempL)
 
     plt.imsave(f"/home/kartonrealista/Code/zupa1/zooman2/zooman{file_n}.png", X)
 
 
-for i in range(50):
-    main(3/1.5**(i+1), 3/1.5**(i+1), -1.0, -0.28661692527754723, i, 300)
+for i in range(56, 70):
+    main(3/1.5**(i+1), 3/1.5**(i+1), -1.0, -0.28661692527754723, i, 16000)

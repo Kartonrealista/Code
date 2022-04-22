@@ -42,14 +42,14 @@ fn mandmis(a: f64, b: f64) -> PyResult<String>
 }
 
 #[pyfunction]
-fn mand(a: f64, b: f64) -> PyResult<i64> 
+fn mand(a: f64, b: f64, n:i64) -> PyResult<i64> 
 {
     let c_re = a;
     let c_im = b;
     let mut zp_re: f64 = 0.0;
     let mut zp_im: f64 = 0.0;
 
-    for i in 0..4000
+    for i in 0..n
     {   
         
         let zn_re = zp_re.powf(2.0) - zp_im.powf(2.0) + c_re;
