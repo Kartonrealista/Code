@@ -49,14 +49,14 @@ fn mand(a: f64, b: f64) -> PyResult<i64>
     let mut zp_re: f64 = 0.0;
     let mut zp_im: f64 = 0.0;
 
-    for i in 0..400
+    for i in 0..4000
     {   
         
         let zn_re = zp_re.powf(2.0) - zp_im.powf(2.0) + c_re;
         let zn_im = 2.0 * zp_re * zp_im + c_im;
         if zn_re.powf(2.0) + zn_im.powf(2.0)  >= 4.0
         {
-            return Ok((i+20)%200 + 30);
+            return Ok(i%200 + 30);
         }
         zp_re = zn_re;
         zp_im = zn_im;

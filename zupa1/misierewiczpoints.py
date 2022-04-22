@@ -18,7 +18,7 @@ def main(x, y):
 
     for i in range(n):
         g1 = 3
-        g2 = 0.1/(2.0*x)
+        g2 = 0.1/(1.1**x)
         #p1 = -1 - g1/2
         p2 = y - g2/2
         # A.append((i+p1/g1*n)/(n/g1))
@@ -27,12 +27,12 @@ def main(x, y):
 
     for j in B:
         aaaaaaa = zupa1.mandmis(-1.0, j)
-        if aaaaaaa != False:
+        if aaaaaaa != "false":
             print(j)
             return [x+1, j]
 
 
-vars = [1, 0.244]
+vars = [1, -0.28661692527754723]
 
 while True:
     vars = main(vars[0], vars[1])
