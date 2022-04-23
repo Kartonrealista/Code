@@ -5,30 +5,40 @@ import copy
 
 def Board(N):
     brd = []
+    d1 = {}
     for i in range(N):
         temp = []
+        dtemp = {}
         for j in range(N):
             temp.append(0)
+            dtemp[j] = 0
         brd.append(temp)
-    return brd
+        d1[i] = dtemp
+    return brd, d1
 
 def main(Ratio):
     M = 10
-    bwrite = Board(M)
+    bwrite, bd = Board(M)
     def randistrib():
-        rand1 = ran.randrange(M)
-        rand2 = ran.randrange(M)
-        if bwrite[rand1][rand2] == 255:
-            randistrib
-        else:
-            bwrite[rand1][rand2] = 255
+        keys1 = list(bd.keys())
+        rand1: int = ran.choice(keys1)
+        val: dict = bd[rand1]
+        keys2 = list(val.keys())
+        rand2 = ran.choice(keys2)
+        val[rand2] = None
+        bwrite[rand1][rand2] = 255
+        if bd[rand1].values() == None:
+            bd[rand1] = None
+
+        
     for a in range(int(Ratio*M**2)):
         randistrib()
 
     def sasiad(plansza, cont, a, b):
         if plansza[a][b] == cont and a == (M-1):
             print("yay")
-            
+            plt.imshow(bwrite2)
+            #plt.show()
             return 1
         if a > 0 and plansza[a - 1][b] != 0 and plansza[a - 1][b] != cont:
             plansza[a - 1][b] = cont
@@ -59,11 +69,11 @@ def main(Ratio):
     for k in range(M):
         if bwrite2[0][k] != 0:
             bwrite2[0][k] = licznik
-            sasiad(bwrite2, licznik, 0, k)
-            for x in range(2*M):
-                wyn = sasiady2()
-                if wyn == 1:
-                    return 1
+            
+        for x in range(2*M):
+            wyn = sasiady2()
+            if wyn == 1:
+                return 1
     return 0
 
 x = 0
