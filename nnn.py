@@ -1,7 +1,4 @@
 from matplotlib import pyplot as p
-import string_sum
-
-print(string_sum.sum_as_string(5, 20))
 
 X = [1, 1]
 Y = [0, 1]
