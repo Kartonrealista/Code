@@ -58,8 +58,8 @@ fn perk_sq(ratio: f64) -> PyResult<u8> {
             }
             // nie wiem, czy to potrzebne, ale nie chcę popsuć kodu. Jeśli instancja została wywołana funkcją union,
             // to rośnie jej ranga
-            x.rank += 1;
-            y.rank += 1;
+            //x.rank += 1;
+            //y.rank += 1;
             // po możliwej zamianie opisanej dwa komentarze wyżej ygrek przyjmuje iksa za rodzica
             y.parent = x.x;
             // funkcja jest jednokierunkowa, tu wymuszamy ten kierunek. Ma to większy sens w połączeniu
@@ -98,7 +98,7 @@ fn perk_sq(ratio: f64) -> PyResult<u8> {
         blist[j] = j;
     }
 
-    let mut sampled_blist = random_con((ratio * (M.pow(2) as f64)) as usize, blist);
+    let sampled_blist = random_con((ratio * (M.pow(2) as f64)) as usize, blist);
 
     // println!(sampled_blist)
     let mut first_row = Vec::new();
@@ -129,13 +129,13 @@ fn perk_sq(ratio: f64) -> PyResult<u8> {
         let (k, l) = index_to_pair(id2);
         match (i as i64 - k as i64, j as i64 - l as i64) {
             (-1, 0) => true,
-            (0, -1) => true,
             (1, 0) => true,
+            (0, -1) => true,
             (0, 1) => true,
             _ => false,
         }
     }
-    sampled_blist.sort();
+    //sampled_blist.sort();
     for &id in &sampled_blist {
         for &id2 in &sampled_blist {
             if id < id2 && sasiad(id, id2) {
