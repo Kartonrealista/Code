@@ -13,7 +13,7 @@ def gcd(n1, n2):
     else:
         maxd = n1
     for i in range(int(maxd), 0, -1):
-        print(i)
+        
         if n1%i == 0 and n2%i == 0:
             return i
 
