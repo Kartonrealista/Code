@@ -7,7 +7,7 @@ for i in range(1, 901):
     l.append(0)
     l2.append(i/9)
     for j in range(30):
-        l[i] += prk.perk_sq(i/900)
+        l[i] += prk.perk_hex(i/900)
     print(i)
 # l2, l = prk.perkhist()
 

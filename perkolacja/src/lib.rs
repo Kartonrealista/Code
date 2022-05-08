@@ -154,9 +154,9 @@ fn perk_sq(ratio: f64) -> PyResult<u8> {
     Ok(0)
 }
 #[pyfunction]
-fn perk_t(ratio: f64) -> PyResult<u8> {
+fn perk_t(ratio: f64) -> PyResult<u8> { 
     use rand::{seq::SliceRandom, thread_rng};
-    const M: usize = 40;
+    const M: usize = 30;
     #[derive(Copy, Clone)]
     struct Forest {
         parent: usize,
@@ -319,7 +319,7 @@ fn perk_t(ratio: f64) -> PyResult<u8> {
 #[pyfunction]
 fn perk_hex(ratio: f64) -> PyResult<u8> {
     use rand::{seq::SliceRandom, thread_rng};
-    const M: usize = 50;
+    const M: usize = 30;
     #[derive(Copy, Clone)]
     struct Forest {
         parent: usize,
