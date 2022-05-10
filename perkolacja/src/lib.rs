@@ -154,10 +154,10 @@ fn perk_sq(ratio: f64) -> PyResult<u8> {
     Ok(0)
 }
 #[pyfunction]
-fn perk_sq_new() -> PyResult<u8> {
+fn perk_sq_new() -> PyResult<(Vec<usize>, Vec<f64>)> {
     use rand::{seq::SliceRandom, thread_rng};
-    const M: usize = 30;
-    #[derive(Copy, Clone)]
+    const M: usize = 50;
+    #[derive(Copy, Clone, Debug)]
     struct Forest {
         parent: usize,
         x: usize,
@@ -225,7 +225,7 @@ fn perk_sq_new() -> PyResult<u8> {
     fn random_con(mut l: Vec<usize>) -> (usize, Vec<usize>) {
         l.shuffle(&mut thread_rng());
         let sample = l.pop();
-        println!("{}", sample.unwrap());
+        //println!("{}", sample.unwrap());
         (sample.unwrap(), l)
     }
     fn sasiadv2(id: usize) -> Vec<usize> {
@@ -239,7 +239,7 @@ fn perk_sq_new() -> PyResult<u8> {
         }
         if j + 1 < M {
             do_zwrotu.push(pair_to_index(i, j + 1));
-        } 
+        }
         if j > 0 {
             do_zwrotu.push(pair_to_index(i, j - 1));
         }
@@ -266,24 +266,26 @@ fn perk_sq_new() -> PyResult<u8> {
                 // instancja klasy odpowiadająca elementowi z rzędu i = 1 (czyli drugiego) nie miała
                 // wyższej rangi niż instancja odpow. elementowi z rzędu i = 0 (pierwszego) i nie
                 // "przyciągała" do siebie innych instancji jako "dzieci", zanim może to zrobić wartość z góry
-                trees[sample].rank = 10 * M;
+                trees[sample].rank += M.pow(2);
             } else if sample >= M * (M - 1) {
                 last_row.push(sample)
             }
             for &id in &sasiadv2(sample) {
                 if trees[id].x <= M.pow(2) {
-                    Forest::union(trees[sample], trees[id], trees);
+                    trees = Forest::union(trees[sample], trees[id], trees);
+                    //println!("{:?} {:?}", trees[sample], trees[id])
                 }
             }
             for &id2 in &last_row {
-                if !breaker {
-                    for &id in &first_row {
-                        if id == trees[id2].find(trees).x {
-                            breaker = true;
-                            // println!("Perkolacja!")
-                            break;
-                        }
+                for &id in &first_row {
+                    if id == trees[id2].find(trees).x {
+                        breaker = true;
+                        // println!("Perkolacja!")
+                        break;
                     }
+                }
+                if breaker {
+                    break;
                 }
             }
             if breaker {
@@ -294,14 +296,19 @@ fn perk_sq_new() -> PyResult<u8> {
         counter
     }
     let mut sampler = [0; M.pow(2)];
-    for i in 0..40 {
+    let mut new_counter = [0f64; M.pow(2)];
+    for j in 0..M.pow(2) {
+        new_counter[j] = 100.0 * j as f64 / (M.pow(2) as f64);
+    }
+    for _i in 0..100 {
         let temp = perk_it(blist);
-        if i >= temp {
-            sampler[i] += 1;
+        for j in 0..M.pow(2) {
+            if j >= temp {
+                sampler[j] += 1;
+            }
         }
     }
-    println!("{:?}", sampler);
-    Ok(0)
+    Ok((sampler.to_vec(), new_counter.to_vec()))
 }
 #[pyfunction]
 fn perk_t(ratio: f64) -> PyResult<u8> {
