@@ -233,11 +233,14 @@ fn perk_sq_new() -> PyResult<u8> {
         let mut do_zwrotu = Vec::new();
         if i + 1 < M {
             do_zwrotu.push(pair_to_index(i + 1, j));
-        } else if i - 1 > 0 {
+        }
+        if i > 0 {
             do_zwrotu.push(pair_to_index(i - 1, j));
-        } else if j + 1 < M {
+        }
+        if j + 1 < M {
             do_zwrotu.push(pair_to_index(i, j + 1));
-        } else if j - 1 > 0 {
+        } 
+        if j > 0 {
             do_zwrotu.push(pair_to_index(i, j - 1));
         }
         do_zwrotu
