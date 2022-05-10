@@ -214,30 +214,31 @@ fn perk_sq_new() -> PyResult<u8> {
         let brd = [[0; M]; M];
         brd
     }*/
-    fn pair_to_index(i: usize, j: usize, n: usize) -> usize {
-        i + j * n
+    fn pair_to_index(i: usize, j: usize) -> usize {
+        i + j * M
     }
     fn index_to_pair(id: usize) -> (usize, usize) {
         let j = id % M;
         let i = id / M;
         (i, j)
     }
-    fn random_con(l: Vec<usize>) -> Vec<usize> {
-        let sample = l
-            .choose(&mut thread_rng());
-        (sample, l)
+    fn random_con(mut l: Vec<usize>) -> (usize, Vec<usize>) {
+        l.shuffle(&mut thread_rng());
+        let sample = l.pop();
+        println!("{}", sample.unwrap());
+        (sample.unwrap(), l)
     }
     fn sasiadv2(id: usize) -> Vec<usize> {
         let (i, j) = index_to_pair(id);
         let mut do_zwrotu = Vec::new();
-        if i+1 < M {
-            do_zwrotu.push(pair_to_index(i+1, j));
-        } else if i-1 > 0 {
-            do_zwrotu.push(pair_to_index(i-1, j));
-        } else if j+1 < M {
-            do_zwrotu.push(pair_to_index(i, j+1));
-        } else if j-1 > 0 {
-            do_zwrotu.push(pair_to_index(i, j-1));
+        if i + 1 < M {
+            do_zwrotu.push(pair_to_index(i + 1, j));
+        } else if i - 1 > 0 {
+            do_zwrotu.push(pair_to_index(i - 1, j));
+        } else if j + 1 < M {
+            do_zwrotu.push(pair_to_index(i, j + 1));
+        } else if j - 1 > 0 {
+            do_zwrotu.push(pair_to_index(i, j - 1));
         }
         do_zwrotu
     }
@@ -245,15 +246,15 @@ fn perk_sq_new() -> PyResult<u8> {
     for j in 0..M.pow(2) {
         blist[j] = j;
     }
-    fn perk_it(list: [usize; M.pow(2)]) -> {
-        let mut old_blist = list;
-        let mut trees = [Forest::makenew(0); M.pow(2) as usize];
+    fn perk_it(list: [usize; M.pow(2)]) -> usize {
+        let mut old_blist = list.to_vec();
+        let mut trees = [Forest::makenew(M.pow(3)); M.pow(2) as usize];
         let mut first_row = Vec::new();
         let mut last_row = Vec::new();
         let mut counter: usize = 0;
+        let mut breaker = false;
         loop {
-            counter +=1;
-            let (sample, new_blist) = random_con((ration * (M.pow(2) as f64)) as usize, old_blist);
+            let (sample, new_blist) = random_con(old_blist);
             old_blist = new_blist;
             trees[sample] = Forest::makenew(sample);
             if sample < M {
@@ -266,26 +267,41 @@ fn perk_sq_new() -> PyResult<u8> {
             } else if sample >= M * (M - 1) {
                 last_row.push(sample)
             }
-            for &id in &sasiadv2 
-            
+            for &id in &sasiadv2(sample) {
+                if trees[id].x <= M.pow(2) {
+                    Forest::union(trees[sample], trees[id], trees);
+                }
+            }
             for &id2 in &last_row {
-                for &id in &first_row {
-                    if id == trees[id2].find(trees).x {
-                        // println!("Perkolacja!")
-                        break
+                if !breaker {
+                    for &id in &first_row {
+                        if id == trees[id2].find(trees).x {
+                            breaker = true;
+                            // println!("Perkolacja!")
+                            break;
+                        }
                     }
                 }
             }
+            if breaker {
+                break;
+            }
+            counter += 1;
         }
-    
-            // println!(first_row)
-            // println!(last_row)
+        counter
+    }
+    let mut sampler = [0; M.pow(2)];
+    for i in 0..40 {
+        let temp = perk_it(blist);
+        if i >= temp {
+            sampler[i] += 1;
         }
     }
+    println!("{:?}", sampler);
     Ok(0)
 }
 #[pyfunction]
-fn perk_t(ratio: f64) -> PyResult<u8> { 
+fn perk_t(ratio: f64) -> PyResult<u8> {
     use rand::{seq::SliceRandom, thread_rng};
     const M: usize = 30;
     #[derive(Copy, Clone)]
@@ -599,6 +615,7 @@ fn perk_hex(ratio: f64) -> PyResult<u8> {
 #[pymodule]
 fn perkolacja(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(perk_sq, m)?)?;
+    m.add_function(wrap_pyfunction!(perk_sq_new, m)?)?;
     m.add_function(wrap_pyfunction!(perkhist, m)?)?;
     m.add_function(wrap_pyfunction!(perk_t, m)?)?;
     m.add_function(wrap_pyfunction!(perk_hex, m)?)?;
