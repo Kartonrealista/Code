@@ -215,7 +215,7 @@ fn perk_sq_new() -> PyResult<u8> {
         brd
     }*/
     fn pair_to_index(i: usize, j: usize) -> usize {
-        i + j * M
+        j + i * M
     }
     fn index_to_pair(id: usize) -> (usize, usize) {
         let j = id % M;
