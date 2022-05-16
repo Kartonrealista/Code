@@ -156,7 +156,7 @@ fn perk_sq(ratio: f64) -> PyResult<u8> {
 #[pyfunction]
 fn perk_sq_new() -> PyResult<(Vec<usize>, Vec<f64>)> {
     use rand::{seq::SliceRandom, thread_rng};
-    const M: usize = 50;
+    const M: usize = 30;
     #[derive(Copy, Clone, Debug)]
     struct Forest {
         parent: usize,
@@ -300,7 +300,7 @@ fn perk_sq_new() -> PyResult<(Vec<usize>, Vec<f64>)> {
     for j in 0..M.pow(2) {
         new_counter[j] = 100.0 * j as f64 / (M.pow(2) as f64);
     }
-    for _i in 0..100 {
+    for _i in 0..400 {
         let temp = perk_it(blist);
         for j in 0..M.pow(2) {
             if j >= temp {
