@@ -222,11 +222,11 @@ fn perk_sq_new() -> PyResult<(Vec<usize>, Vec<f64>)> {
         let i = id / M;
         (i, j)
     }
-    fn random_con(mut l: Vec<usize>) -> (usize, Vec<usize>) {
+    fn random_con(l: &mut Vec<usize>) -> usize {
         l.shuffle(&mut thread_rng());
         let sample = l.pop();
         //println!("{}", sample.unwrap());
-        (sample.unwrap(), l)
+        sample.unwrap()
     }
     fn sasiadv2(id: usize) -> Vec<usize> {
         let (i, j) = index_to_pair(id);
@@ -257,8 +257,7 @@ fn perk_sq_new() -> PyResult<(Vec<usize>, Vec<f64>)> {
         let mut counter: usize = 0;
         let mut breaker = false;
         loop {
-            let (sample, new_blist) = random_con(old_blist);
-            old_blist = new_blist;
+            let sample = random_con(&mut old_blist);
             trees[sample] = Forest::makenew(sample);
             if sample < M {
                 first_row.push(sample);
