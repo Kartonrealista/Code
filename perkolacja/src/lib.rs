@@ -171,17 +171,15 @@ fn perk_sq_new() -> PyResult<(Vec<usize>, Vec<f64>)> {
                 rank: 0,
             }
         }
-        fn find(self, tree: &mut [Forest; M.pow(2)]) -> Forest {
-            let mut temp_parent = self.parent;
-            let mut temp_x = self.x;
+        fn find(mut self, tree: &mut [Forest; M.pow(2)]) -> Forest {
             // println!(temp_parent, temp_x)
-            while temp_parent != temp_x {
-                temp_x = tree[temp_x].parent;
-                temp_parent = tree[temp_x].parent;
+            while self.x != self.parent {
+                self.parent = tree[self.parent].parent;
+                self.x = tree[self.x].parent;
                 // println!(temp_parent, temp_x)
             }
             // Zwraca "najstarszego przodka" instancji
-            tree[temp_x]
+            tree[self.x]
         }
 
         fn union(x: Forest, y: Forest, tree: &mut [Forest; M.pow(2)]) {
