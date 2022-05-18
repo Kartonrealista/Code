@@ -9,6 +9,6 @@ import matplotlib.pyplot as plt
 #     for j in range(30):
 #         l[i] += prk.perk_hex(i/900)
 #     print(i)
-l, l2 = prk.perk_sq_new()
+l, l2 = prk.perk_t_new()
 plt.scatter(l2, l)
 plt.show()
