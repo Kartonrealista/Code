@@ -171,7 +171,7 @@ fn perk_sq_new() -> PyResult<(Vec<usize>, Vec<f64>)> {
                 rank: 0,
             }
         }
-        fn find(&self, tree: [Forest; M.pow(2)]) -> Forest {
+        fn find(&self, tree: &mut [Forest; M.pow(2)]) -> Forest {
             let mut temp_parent = self.parent;
             let mut temp_x = self.x;
             // println!(temp_parent, temp_x)
@@ -184,7 +184,7 @@ fn perk_sq_new() -> PyResult<(Vec<usize>, Vec<f64>)> {
             tree[temp_x]
         }
 
-        fn union(x: Forest, y: Forest, mut tree: [Forest; M.pow(2)]) -> [Forest; M * M] {
+        fn union(x: Forest, y: Forest, tree: &mut [Forest; M.pow(2)]) {
             let mut x = x.find(tree);
             let mut y = y.find(tree);
 
@@ -207,7 +207,6 @@ fn perk_sq_new() -> PyResult<(Vec<usize>, Vec<f64>)> {
             }
             tree[x.x] = x;
             tree[y.x] = y;
-            tree
         }
     }
     /*fn Board() -> [[usize; M]; M] {
@@ -257,27 +256,29 @@ fn perk_sq_new() -> PyResult<(Vec<usize>, Vec<f64>)> {
         let mut counter: usize = 0;
         let mut breaker = false;
         loop {
+            let muttrees = &mut trees;
             let sample = random_con(&mut old_blist);
-            trees[sample] = Forest::makenew(sample);
+            muttrees[sample] = Forest::makenew(sample);
             if sample < M {
                 first_row.push(sample);
                 // bez tego symulacja się partoli. Jest tu po to, żeby przypadkiem nie wyszło, że jakaś
                 // instancja klasy odpowiadająca elementowi z rzędu i = 1 (czyli drugiego) nie miała
                 // wyższej rangi niż instancja odpow. elementowi z rzędu i = 0 (pierwszego) i nie
                 // "przyciągała" do siebie innych instancji jako "dzieci", zanim może to zrobić wartość z góry
-                trees[sample].rank += M.pow(2);
+                muttrees[sample].rank += M.pow(2);
             } else if sample >= M * (M - 1) {
                 last_row.push(sample)
             }
             for &id in &sasiadv2(sample) {
-                if trees[id].x <= M.pow(2) {
-                    trees = Forest::union(trees[sample], trees[id], trees);
+                if muttrees[id].x <= M.pow(2) {
+                    Forest::union(muttrees[sample], muttrees[id], muttrees);
                     //println!("{:?} {:?}", trees[sample], trees[id])
                 }
             }
             for &id2 in &last_row {
                 for &id in &first_row {
-                    if id == trees[id2].find(trees).x {
+                    let temp = muttrees[id2].clone();
+                    if id == temp.find(muttrees).x {
                         breaker = true;
                         // println!("Perkolacja!")
                         break;
