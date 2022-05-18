@@ -171,7 +171,7 @@ fn perk_sq_new() -> PyResult<(Vec<usize>, Vec<f64>)> {
                 rank: 0,
             }
         }
-        fn find(&self, tree: &mut [Forest; M.pow(2)]) -> Forest {
+        fn find(self, tree: &mut [Forest; M.pow(2)]) -> Forest {
             let mut temp_parent = self.parent;
             let mut temp_x = self.x;
             // println!(temp_parent, temp_x)
@@ -249,15 +249,15 @@ fn perk_sq_new() -> PyResult<(Vec<usize>, Vec<f64>)> {
         blist[j] = j;
     }
     fn perk_it(list: [usize; M.pow(2)]) -> usize {
-        let mut old_blist = list.to_vec();
+        let mut blist = list.to_vec();
         let mut trees = [Forest::makenew(M.pow(3)); M.pow(2) as usize];
         let mut first_row = Vec::new();
         let mut last_row = Vec::new();
         let mut counter: usize = 0;
         let mut breaker = false;
+        let muttrees = &mut trees;
         loop {
-            let muttrees = &mut trees;
-            let sample = random_con(&mut old_blist);
+            let sample = random_con(&mut blist);
             muttrees[sample] = Forest::makenew(sample);
             if sample < M {
                 first_row.push(sample);
@@ -277,8 +277,7 @@ fn perk_sq_new() -> PyResult<(Vec<usize>, Vec<f64>)> {
             }
             for &id2 in &last_row {
                 for &id in &first_row {
-                    let temp = muttrees[id2].clone();
-                    if id == temp.find(muttrees).x {
+                    if id == muttrees[id2].find(muttrees).x {
                         breaker = true;
                         // println!("Perkolacja!")
                         break;
